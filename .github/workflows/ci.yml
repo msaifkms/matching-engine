@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+    env:
+      CC: ${{ matrix.compiler }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test (${{ matrix.compiler }})
+        run: make test
+
+  sanitizers:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer: [asan, tsan]
+    env:
+      CC: clang
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fix memory layout for TSan
+        if: matrix.sanitizer == 'tsan'
+        run: sudo sysctl vm.mmap_rnd_bits=28
+      - name: Build and test (${{ matrix.sanitizer }})
+        run: make ${{ matrix.sanitizer }}
