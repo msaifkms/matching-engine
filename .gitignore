@@ -1,0 +1,20 @@
+# Build output
+build/
+build-*/
+
+# Compiler and tool output
+*.o
+*.a
+compile_commands.json
+
+# Profiling output (Valgrind, perf)
+massif.out.*
+callgrind.out.*
+perf.data*
+
+# Python (benchmark charts later)
+__pycache__/
+.venv/
+
+# macOS
+.DS_Store
